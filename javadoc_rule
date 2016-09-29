@@ -1,0 +1,210 @@
+1、在javadoc中的语法可理解为html下的简单转变，具有统一的格式。即javadoc语法在执行时都转化为html语句执行。因此html语法、标签在javadoc中也适用。
+
+2、在javadoc中，注释性语言不会自动换行，即在java类文件中书写中的换行在最后形成的文档中不会换行，可以使用<br>进行换行。
+
+3、对于标记 @ ，在注释时应重启一行开始写，否则它会默认为上一标记的一部分。并且在同一标记下，同理。(此处重启一行不用加<br>)。
+
+		java中注释					文档显示
+	   * @param name String类型，姓名            name - String类型，姓名 查看: @see getName()  (其中getName()为非超链接，下面会解释)
+	   * 查看: @see #getName()
+
+
+4、{ @ }标记类型是相当于在注释文本中使用，不作为文档中的单独一种类型展示。
+  
+5、*号前的空格会被忽略，注释中的多余空格均作为一个空格展示。若缺失*号，对文档基本无影响，但此时之前在*前面的空格可能会保留，比如在<pre></pre>中空格会保留，
+
+6、对于一个 @ 语句 其后面的所有数据均可能作为其一个参数，直达遇到下一个 @ 或到达结尾，但{ @ }不算。
+   例：
+		java中注释						    文档显示
+	* @see #getName() getName code <br>				getName code 
+	        test{ @code List<String>} list			      test{ @code List} list
+	    
+
+7、{ @link } 与 { @linkplain }方法基本相似，与 @see 方法类似，即后面都跟可参考的类或类内方法。
+    区别： @link 显示为code font； @linkplain 显示为文本字体格式； 
+    @see 为单独元素展示，不能应用在文本中，而前两者在文本中使用。
+
+8、main description 指在 /** 后，在  @ 前的注释描述部分。
+
+9、文档注释分为三部分。第一部分是简述，即列表中属性名或者方法名后面那段说明就是简述；第二部分是详细说明部分，
+   该部分对属性或者方法进行详细的说明，可以包含若干个点号；第三部分是特殊说明部分，这部分包括版本说明、参数说明、返回值说明等。
+   对于第一第二部分，以 点号(.) 为分界点，即.之前为第一部分，其余除了第三部分的说明外其余全部为第二部分，即对变量或方法的详细说明。
+
+10、标记 @ 在文本中无法正常使用，只是作为上一标记的参数或普通文本展示(3)。{ @ }在文本中使用，但作为标记 @ 下的参数时不起本身作用，只为普通文本(4)。
+   { @ } 可出现在 @ 并起作用是作为该标签注释文档的一部分，比如，deprecated、return、param、throws。作为后面解释部分时可用 { @ } 。
+
+11、对于修饰符 synchronized 与 native 在文档中不显示，即含有这两个修饰符的方法在文档中的此方法的修饰符中不显示。
+    例：
+     public native static double getPassword();			public static double getPassword();
+
+	
+12、 @author  name-text
+           作者：对于多个作者，可以一个标签写一个作者，显示文档中以逗号将作者分开；也可一个标签写多个作者，中间符号自拟，此时，文档不会解析，按你书写的方式展示。 
+           例：           * @author xuzhiyou
+			  * @author xzy--xzy2--xzy3
+    
+13、 {@code  text}  等效于： <code>{ @literal text}</code>
+     {@cide} 与 {@literal} 作用相似，都是用来将类似 { @code A<B>C} 在文档中展示为 A<B>C。
+             例：* {@code public List<Object> getObjects()}
+             区别：
+    A、 {@cide} 显示为code font，即代码字体格式；而{@literal} 显示为文本字体格式。 但在<code></code>中两者一样显示，因为<code></code>内也显示代码字体格式，
+      <pre></pre>也可显示代码字体格式。
+    B、<code></code>其与  @cide 的区别就是前者对特殊字符无法展示。
+    C、<code></code>用于在html中显示代码字体格式，<pre></pre>用来固定换行空格等样式，对于<>等字符若已用{@code} 或{literal}，<code></code>可不用，反之不可以。
+    D、对于  @code 若用在<code></code>中会提示警告，看版本，有的不警告。公司电脑不警告个人电脑里会出现警告。jdk版本影响？
+    
+ 
+ 14、 {@literal  text}  同上
+ 
+ 15、 {@docRoot}  生成的javadoc根路径。一般用于连接。可应用在任何文本注释地方。(overview, package, class, interface, constructor, method and field
+     some tags (such as @return, @param and @deprecated)). 
+              例：      * Look the <a href="{@docRoot}/../testDoc/overview-tree.html">Copyright</a>
+                            即在此处添加一个连接，连接到文档生成路径回退一个文件夹下的testDoc文件夹下的overview-tree.html文件。
+ 
+ 16、 @deprecated  deprecated-text   标注已废用。(overview, package, class, interface, constructor, method and field)
+             文档显示时将deprecated-text在main description之前先显示，并为斜体，且将其作为文档注释的第一部分(9)。规范下应添加  { @link } 指明替代品。
+             例：  * @deprecated  As of JDK 1.1, replaced by {@link #setBounds(int,int,int,int)}
+ 
+ 17、 @throws  class-name  description   异常标签,用来标记抛出的异常。同 @exception 。(method, constructor)
+                规范：对每一个异常添加一个对应的标签。缺失：先继承，无法继承则会自动添加异常，无description。
+     ( @throws tag is copied only when the exception is explicitly declared in the overridden method. 不晓得啥意思) 
+                 异常类名( class-name)应该根据源文件的 import 语句确定是写出类名还是类全名     
+                例：  * @throws FileNotFoundException    if there no file-HighArray
+ 
+ 18、 @exception class-name  description     同上
+ 
+ 
+ 19、 {@inheritDoc}: 继承，前提是此方法覆盖了父类的或实现了接口中的方法。(变量无法使用，只能应用在 method前)(main description, @return , @param , @throws )
+	A、若此方法前写明了覆盖： @Override 且其在注释标签前，则不论本类方法中是否有注释均不显示，只继承父类或接口中的注释，若父类或接口中对应的方法无注释，则此方法也无注释(有自动添加的注释)；
+	B、若无 @Override 或其在注释后方法名前，则会显示本类方法的注释；下面均是在B的情况下讨论。
+	C、若在  main description, @return, @param, @throws tag，其中一个或多个缺失了，则其会自动继承父类或接口中的注释；
+	D、若在  main description, @return, @param, @throws tag中，添加{ @inheritDoc }，则其对应位置不管有没有注释，仍会再加上父类或接口相应位置的注释，
+	        此处与A的区别是，A中情况会覆盖本身的注释，而D是添加是合并，不会覆盖。
+	E、对于既继承又实现接口，且都含有相同的类,则本类缺失标记时先去父类中查找，父类也缺失时再去接口中查找。(和api文档说的貌似不同)
+	例：     * @param string {@inheritDoc}   (string 为参数)
+ 
+ 
+ 20、 {@link  package.class#member label}  超连接。member为具体的方法或变量，label为在文档中展示的替代标记，可省略，也可只到class或package。(可用的范围同{ @docRoot })
+            若省略label，则显示的名称为 package.class.member 或相应的自动缩减格式。
+            作用范围为{}，若其内想用"}"，用 HTML中符号 &#125替代。与{ @linkplain }方法基本相同，与 @see 参数及作用类似，
+           例：  * 此方法与{@link HighArray#find(long) Find} 中方法作用相同.
+ 
+ 21、 {@linkplain  package.class#member  label} 超连接。  同{@link}。其区别与 {@cide} 和{@literal} 之间的区别一样。
+            区别：{@link} 显示为code font，{@linkplain}显示为文本字体格式。
+          
+ 22、 @see reference      标签：前会添加“另请参见”(See Also)字样。 其后为超链接或文本，看 reference 的选择。
+   A、 @see "string"   后为文本。比如可以添加要参见的书籍名等信息，非连接格式。
+                   例：   * @see "JAVA 设计思想"
+   B、 @see <a href="URL#value">label</a>   连接格式
+                   例：  * @see <a href="spec.html#section">Java Spec</a>          
+   C、 @see  package.class#member  label  超链接 (参数说明见 {@link} )
+   
+ 23、  package.class#member 的写法：  @see、  {@link}、 {@linkplain} 适用
+   		1、Referencing of the current class： (本类也可省略#，但会警告)
+   			 * @see  #field
+			 * @see  #method(Type, Type,...)
+			 * @see  #method(Type argname, Type argname,...)
+		2、Referencing another class in the current or imported packages：(为避免重复可加上package)
+   			 * @see  Class#field
+			 * @see  Class#method(Type, Type,...)
+			 * @see  Class#method(Type argname, Type argname,...)
+			 * @see  Class.NestedClass                (内部类)
+			 * @see  Class 
+  	   	3、Referencing in another package (fully qualified):
+   			 * @see  package.Class#field
+			 * @see  package.Class#method(Type, Type,...)
+			 * @see  package.Class#method(Type argname, Type argname,...)
+			 * @see  package.Class.NestedClass   
+			 * @see  package.Class 
+   			 * @see  package
+   
+              注：上述都可写全名，上述只是为了方便；1中的写法只会在当前类或其包装类或父类或实现接口搜索；嵌套类必须写明outer.inner。
+                        若方法没有括号或写错，文档中会显示，但是为文本格式，非连接。对于重载方法，会自动选择一个相近的方法作为连接。
+   
+   
+ 
+ 若要建立连接类也在建立文档中(即一块编译)，则可创建连接，否则虽然能正常显示，但其为文本格式非超连接，即在练习中String类非超链接：
+ 对于java其它的类，若没有import，因为没有一块编译，在进行运用时会警告，import后可正常显示但无连接。
+ 对于规范：description可换行写
+ 
+      
+ 
+ 24、 @param  parameter-name description  参数注释标签。 (method, class)
+     A、方法的普通参数(parameter)  parameter-name 即是参数名称
+     B、类或方法的类型参数(type parameter) parameter-name  <类型>
+              若方法含有多个参数，在注释时没有全部都进行param注释，会警告。若多加了param，文档中仍会全部显示但会警告。
+              多个参数的方法为继承或实现时，若此方法有参数标记缺失，自动继承父类或接口对应位置的参数注释。
+              例： 
+      /**
+      * @param string  the string to be converted
+      * @param type    the type to convert the string to
+      * @param <T>     the type of the element
+      * @param <V>     the value of the element
+      */
+     <T, V extends T> V convert(String string, Class<T> type) {}
+               
+                 
+         
+ 25、 @return  description      返回值描述。主要描述返回值的类型与取值范围。  (method)。
+           具有返回值的方法只能包含一个 @return，包含多个或缺失会警告，并且只有第一个有效。
+           例：        * @return the value is conversion result
+           
+ 26、 @since  since-text     标记该处 从此版本开始使用。  (overview, package, class, interface, constructor, method, field)
+           可有多个 同 @author 
+           例：       * @since 1.5
+           
+ 27、 @version  version-text     版本标记。记录此版本包含哪些内容。  (overview, package, class)
+           可有多个 同 @author 
+           例：       * @version 1.4         
+           
+28、 {@value  package.class#field}     常量的值。      (field)-(static final )
+     A、无参数：   {@value} 即代表其紧挨着的常量值。
+     B、有参：      {@value  package.class#field} 即代表常量field的值
+           例：                    * static final: {@value}  
+           * HighArray.VALUE:{@value xzy.HighArray#VALUE}
+           
+           
+           
+
+29、Package Comment Files   包注释文件：即对包进行注释，也可用javadoc标签。
+    主要有两种形式，也即两种命名：
+    A、.java 文件，名称：     package-info.java
+        例：     注意不要漏掉最后package这句话。  在最前面不要加任何标签，直接进行文本写入。
+	/**
+	 * Provides the classes necessary to create an applet and the classes an applet uses 
+	 * <p>
+	 * The applet framework involves two entities: 
+	 *  An applet is an embeddable window (see the {@link java.awt.Panel} class) with a few extra methods 
+	 *
+	 * @since 1.0
+	 * @see java.awt
+	 */
+	package java.lang.applet;
+	
+     B、.html 文件，名称：   package.html
+	例：  注意在html中不应该再加/** and */ 或*。body与文本之间不应加任何标签。
+	 <HTML>
+	<BODY>
+	* Provides the classes necessary to create an applet and the classes an applet uses 
+	 * <p>
+	 * The applet framework involves two entities: 
+	 *  An applet is an embeddable window (see the {@link java.awt.Panel} class) with a few extra methods 
+	 *
+	 * @since 1.0
+	 * @see java.awt
+	</BODY>
+	</HTML>
+		
+		
+     上述两种方式的命名不能改，将包注释文件放到根目录下，即与正常的.java文件放在一起。且一个包只能放一个包注释文件，或 package.html或package-info.java。
+		
+ 
+ 30、关于Overview Comment File 还未实验成功，即overview.html文件
+ 
+ 
+ 
+ 
+         * @spec JSR-51
+    
+
+
